@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h2>这是App.vue页面</h2>
+  <div class="app">
     <router-view></router-view>
   </div>
 </template>
@@ -12,5 +11,7 @@ export default {
 </script>
 
 <style>
-
+.app {
+  height: 100%;
+}
 </style>
