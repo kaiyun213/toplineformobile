@@ -51,8 +51,6 @@
 
 //导入登录请求的api
 import { login } from '@/api/user'
-//导入token保存函数
-import {setAuthor} from '@/utils/author' 
 export default {
   data() {
     return {
@@ -86,19 +84,26 @@ export default {
           //符合检验规则
           //发送请求获取数据
           try {
-            
+            /* 
+            对于try{}catch(){},try()里面的代码是可能会出现错误问题的代码,
+            在执行时,如果try{}里面的代码正确,则执行里面的代码,如果不正确,则执行catch里面的代码
+            catch(){}里面的代码是不会出错的代码
+            */
             let res = await login({
               mobile: this.mobile,
               code: this.code
             })
             console.log(res)
             //将数据保存进本地的缓存中
-            setAuthor(res)
-            //跳转到home页面
-            this.$router.push('/home')
+            window.localStorage.setItem('token',JSON.stringify(res))
           } catch (err) {
             console.log('出错了')
           }
+          /* 
+          await和async,必须相互配合使用
+          await是将异步代码转化成同步代码,
+          async配合await使用,必须使用在包裹await的函数前面
+          */
         }
       });
     }

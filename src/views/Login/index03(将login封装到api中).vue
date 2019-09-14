@@ -50,9 +50,7 @@
 */
 
 //导入登录请求的api
-import { login } from '@/api/user'
-//导入token保存函数
-import {setAuthor} from '@/utils/author' 
+import {login} from '@/api/user'
 export default {
   data() {
     return {
@@ -81,24 +79,21 @@ export default {
     },
     //点击登录事件
     toLogin() {
-      this.$validator.validate().then(async valid => {
+      this.$validator.validate().then(valid => {
         if (valid) {
           //符合检验规则
           //发送请求获取数据
-          try {
-            
-            let res = await login({
-              mobile: this.mobile,
-              code: this.code
-            })
-            console.log(res)
-            //将数据保存进本地的缓存中
-            setAuthor(res)
-            //跳转到home页面
-            this.$router.push('/home')
-          } catch (err) {
-            console.log('出错了')
-          }
+          login({
+            mobile: this.mobile,
+            code: this.code,
+          }).then(res => {
+            // console.log(res)
+            //将token保存到本地存储
+            window.localStorage.setItem('token',JSON.stringify(res))
+            //并跳转到首页
+             this.$router.push('/home')
+          })
+
         }
       });
     }
