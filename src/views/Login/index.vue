@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h2>这是App.vue页面</h2>
-    <router-view></router-view>
+      <h2>这里是login页面</h2>
   </div>
 </template>
 
