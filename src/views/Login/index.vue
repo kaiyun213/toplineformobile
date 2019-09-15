@@ -92,7 +92,7 @@ export default {
               mobile: this.mobile,
               code: this.code
             })
-            console.log(res)
+            // console.log(res)
             //将数据保存进本地的缓存中
             this.$store.commit('setUse', res)
             //跳转到home页面

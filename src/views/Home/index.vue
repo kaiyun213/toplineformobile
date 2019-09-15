@@ -5,19 +5,19 @@
     <!-- 频道标签导航栏 -->
     <div style="position:fixed;top:46px;left:0;width:100%;">
       <van-tabs v-model="tabActive" style="margin-right:40px">
-        <van-tab title="标签 1">
+        <van-tab :title="channel.name" v-for="channel in channelList" :key="channel.id">
           <van-list v-model="upLoading" :finished="finished" finished-text="没有更多了" @load="onLoad">
             <van-pull-refresh v-model="downLoading" @refresh="onRefresh">
               <van-cell v-for="item in list" :key="item" :title="item" />
             </van-pull-refresh>
           </van-list>
         </van-tab>
-        <van-tab title="标签 2">内容 2</van-tab>
+       <!--  <van-tab title="标签 2">内容 2</van-tab>
         <van-tab title="标签 3">内容 3</van-tab>
         <van-tab title="标签 4">内容 4</van-tab>
         <van-tab title="标签 5">内容 5</van-tab>
         <van-tab title="标签 6">内容 6</van-tab>
-        <van-tab title="标签 7">内容 7</van-tab>
+        <van-tab title="标签 7">内容 7</van-tab> -->
       </van-tabs>
     </div>
     <div slot="nav-right" class="nav-right-icon" @click="showPopup">
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+//导入channel 
+import {channelRequest} from'@/api/channel.js'
 export default {
   data() {
     return {
@@ -48,6 +50,8 @@ export default {
       list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
       //下拉刷新
       downLoading:false,
+      //定义存放频道的数组
+      channelList:[],
     }
   },
   methods: {
@@ -62,7 +66,41 @@ export default {
     //onRefresh刷新事件
     onRefresh(){
 
+    },
+    //封装获取频道的方法
+    async getChannel(){ 
+      //1判断是否登录
+      //1.1得到用户登录的信息
+      let {use} =this.$store.state
+      //1.2判断是否是有登录信息token
+      if (use) {
+        //为true,则说明有值,即有登录
+        //1.2.1发送请求到服务器
+      let res=await channelRequest()
+      //1.2.2将结果赋值给频道的数组
+      //  console.log(res)
+      this.channelList=res.channels
+      }else{
+        //为false,即没有值,即没有登录
+        //没有登录,则判断本地缓存是否有频道数据
+        //获取频道数据
+        let channelCache=JSON.parse(window.localStorage.getItem('channnel'))
+        //判断本地缓存是否有频道信息
+        if(channelCache){
+          //有值,则,直接赋值,
+        this.channelList=channelCache;
+        }else{
+          //没有值,则调用接口,发送请求
+          let res =await channelRequest()
+          //将数据赋给channelList
+           this.channelList=res.channels
+
+        }
+      }
     }
+  },
+  mounted() {
+    this.getChannel()
   },
 }
 </script>
