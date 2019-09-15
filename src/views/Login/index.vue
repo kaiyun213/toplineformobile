@@ -23,7 +23,7 @@
       />
     </van-cell-group>
     <div class="login-btn">
-      <van-button type="info" size="large" @click="toLogin">登录</van-button>
+      <van-button type="info" :loading="isLoading" size="large" @click="toLogin">登录</van-button>
     </div>
   </div>
 </template>
@@ -57,7 +57,8 @@ export default {
     return {
       mobile: '',
       code: '246810',
-
+      //登录按钮的加载动画
+      isLoading: false,
     }
   },
   methods: {
@@ -80,23 +81,28 @@ export default {
     },
     //点击登录事件
     toLogin() {
+      this.isLoading = true
       this.$validator.validate().then(async valid => {
         if (valid) {
           //符合检验规则
           //发送请求获取数据
           try {
-            
+
             let res = await login({
               mobile: this.mobile,
               code: this.code
             })
             console.log(res)
             //将数据保存进本地的缓存中
-            this.$store.commit('setUse',res)
+            this.$store.commit('setUse', res)
             //跳转到home页面
             this.$router.push('/home')
+            this.isLoading = false
           } catch (err) {
-            console.log('出错了')
+            // console.log('出错了')
+            //登录失败提示用户
+            this.isLoading = false
+            this.$toast.fail('登录失败');
           }
         }
       });
