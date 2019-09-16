@@ -12,7 +12,8 @@ function setAuthor(value){
 
 //获取数据
 function getAuthor(){
-    return window.localStorage.getItem(Author_KEY)?JSON.stringify(window.localStorage.getItem(Author_KEY)):null
+    // console.log(window.localStorage.getItem(Author_KEY))
+    return window.localStorage.getItem(Author_KEY)?JSON.parse(window.localStorage.getItem(Author_KEY)):null
 }
 
 

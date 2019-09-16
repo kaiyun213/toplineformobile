@@ -18,7 +18,6 @@ instance.interceptors.request.use(config => {
     //有值,则代表已经登录,没有值,则代表没有登录,不需要做什么
    //给请求头设置token
    config.headers.Authorization=`Bearer ${use.token}`
-   
   }
  
   return config;
