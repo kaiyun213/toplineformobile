@@ -28,7 +28,7 @@
       1.传入一个参数给组件
       2.给组件绑定事件   input
      -->
-    <channel v-model="show" ></channel>
+    <channel v-model="show" :channelArr="channelList" :active.sync="tabActive" ></channel>
   </div>
 </template>
 

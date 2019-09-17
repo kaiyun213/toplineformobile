@@ -13,7 +13,15 @@ function channelRequest(){
     })
 }
 
+//获取所有的频道
+function getAllChannel(){
+    return request({
+        url:'/app/v1_0/channels',
+        method:'GET',
+    })
+}
+
 
 //暴露函数
 
-export {channelRequest}
+export {channelRequest, getAllChannel}
