@@ -2,12 +2,18 @@
   <div class="home">
     <!-- 顶部的首页 -->
     <van-nav-bar title="首页" class="index-nav-bar" />
+    
     <!-- 频道标签导航栏 -->
     <!-- style="position:fixed;top:46px;left:0;width:100%;margin-right:40px" -->
     <van-tabs v-model="tabActive">
       <van-tab :title="channel.name" v-for="channel in channelList" :key="channel.id">
-        <van-pull-refresh v-model="downLoading" @refresh="onRefresh">
-          <van-list v-model="channel.upLoading" :finished="channel.finished" finished-text="没有更多了" @load="onLoad">
+        <van-pull-refresh v-model="channel.downLoading" @refresh="onRefresh">
+          <van-list
+            v-model="channel.upLoading"
+            :finished="channel.finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
             <van-cell v-for="item in channel.articleList" :key="item.art_id" :title="item.title" />
           </van-list>
         </van-pull-refresh>
@@ -17,11 +23,12 @@
       <van-icon name="wap-nav" />
     </div>
     <!-- 弹出层 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '90%' }">
-      <van-grid :gutter="10">
-        <van-grid-item v-for="value in 8" :key="value" icon="photo-o" text="文字" />
-      </van-grid>
-    </van-popup>
+    <!-- 
+      v-model:
+      1.传入一个参数给组件
+      2.给组件绑定事件   input
+     -->
+    <channel v-model="show" ></channel>
   </div>
 </template>
 
@@ -30,7 +37,12 @@
 import { channelRequest } from '@/api/channel.js'
 //导入获取文章列表的方法
 import { getArticleList } from '@/api/articleList.js'
+//导入组件
+import channel from './channel/index.vue'
 export default {
+  components:{
+  channel,
+  },
   data() {
     return {
       //标签默认选中的选项
@@ -44,7 +56,7 @@ export default {
       //假的文章列表数据
       // list: [],
       //下拉刷新
-      downLoading: false,
+      // downLoading: false,
       //定义存放频道的数组
       channelList: [],
     }
@@ -58,6 +70,12 @@ export default {
     async onLoad() {
       //获取当前激活的频道对象
       let currentChennal = this.channelList[this.tabActive]
+      //判断时间戳是否为null,如果为null,则表示数据已经加载完成
+      if (currentChennal.pre_timestamp === null) {
+        //加载已经完成,finish的状态应该改为true
+        currentChennal.finished = true
+        currentChennal.upLoading = false
+      }
       //得到激活频道的id
       let channelid = currentChennal.id
       //判断是否是第一次进入方法
@@ -72,13 +90,10 @@ export default {
         // console.log(res)
         currentChennal.articleList = res.results
         //将页面上的数据动态变化
-        this.channelList = [...this.channelList]
+        // this.channelList = [...this.channelList]
         currentChennal.pre_timestamp = res.pre_timestamp
-        //将加载状态设置为false
-        currentChennal.upLoading = false
-        // currentChennal.downLoading = false
       } else {
-        //第二次进入
+        //第二次以后进入
         let res = await getArticleList({
           channel_id: channelid,
           timestamp: Date.now(),
@@ -87,35 +102,23 @@ export default {
         //将得到的数据进行追加
         currentChennal.articleList = [...currentChennal.articleList, ...res.results]
         //将页面上的数据进行动态变化
-        this.channelList = [...this.channelList]
         currentChennal.pre_timestamp = res.pre_timestamp
-        //将加载状态设置为false
-        currentChennal.upLoading = false
-        // currentChennal.downLoading = false
       }
-      // this.upLoading = false
+      //将加载状态设置为false
+      currentChennal.upLoading = false
     },
     //onRefresh刷新事件
     async onRefresh() {
       //获取当前激活的频道对象
       let currentChennal = this.channelList[this.tabActive]
-
       //更新当前数据
       currentChennal.articleList = []
       currentChennal.upLoading = false
       currentChennal.finished = false
+      currentChennal.downLoading = false
       currentChennal.pre_timestamp = 0
       //自动加载数据
-      let res = await getArticleList({
-        channel_id: currentChennal.id,
-        timestamp: Date.now(),
-        with_top: 1
-      })
-      currentChennal.articleList=res.results
-      currentChennal.pre_timestamp=res.pre_timestamp
-      // currentChennal.downLoading=false
-      this.channelList=[...this.channelList]
-      this.downLoading=false
+      this.onLoad();
     },
     //封装获取频道的方法
     async getChannel() {
@@ -144,7 +147,6 @@ export default {
           let res = await channelRequest()
           //将数据赋给channelList
           this.channelList = res.channels
-
         }
       }
       //给频道动态添加其他属性
@@ -155,15 +157,15 @@ export default {
       //遍历channelList,并给它里面的每个数据添加属性
       this.channelList.forEach(item => {
         //添加文章列表
-        item.articleList = []
+        this.$set(item, 'articleList', [])
         // 添加上滑加载更多
-        item.upLoading = false
+        this.$set(item, 'upLoading', false)
         //添加上滑加载完毕
-        item.finished = false
+        this.$set(item, 'finished', false)
         //添加下滑刷新
-        item.downLoading = false
+        this.$set(item, 'downLoading', false)
         //添加上一页数据的事件戳  pre_timestamp
-        item.pre_timestamp = 0
+        this.$set(item, 'pre_timestamp', 0)
       })
     }
   },
@@ -201,10 +203,10 @@ export default {
 }
 .nav-right-icon {
   position: fixed;
-  top: 46px;
-  right: 0;
+  top: 50px;
+  right: 5px;
   z-index: 100;
-  font-size: 40px;
+  font-size: 30px;
   background-color: #fff;
 }
 .van-cell {
