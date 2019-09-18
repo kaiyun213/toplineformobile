@@ -2,7 +2,7 @@
   <div class="home">
     <!-- 顶部的首页 -->
     <van-nav-bar title="首页" class="index-nav-bar" />
-    
+
     <!-- 频道标签导航栏 -->
     <!-- style="position:fixed;top:46px;left:0;width:100%;margin-right:40px" -->
     <van-tabs v-model="tabActive">
@@ -14,7 +14,25 @@
             finished-text="没有更多了"
             @load="onLoad"
           >
-            <van-cell v-for="item in channel.articleList" :key="item.art_id" :title="item.title" />
+            <van-cell v-for="item in channel.articleList" :key="item.art_id" :title="item.title">
+              <template slot="label">
+                <van-grid :border="false" :column-num="3" v-if="item.cover.type>0">
+                  <van-grid-item v-for="(image,imgIndex) in item.cover.images" :key="imgIndex">
+                    <van-image lazy-load :src="image" style="width:100px;height:100px" />
+                  </van-grid-item>
+                </van-grid>
+                <div class="bottom-row">
+                  <div class="bottom-row-left">
+                    <span>{{item.aut_name}}</span>
+                    <span>评论 {{item.comm_count}}</span>
+                    <span>{{item.pubdate | dayjsformat }}</span>
+                  </div>
+                  <div>
+                    <van-icon name="cross" />
+                  </div>
+                </div>
+              </template>
+            </van-cell>
           </van-list>
         </van-pull-refresh>
       </van-tab>
@@ -27,8 +45,8 @@
       v-model:
       1.传入一个参数给组件
       2.给组件绑定事件   input
-     -->
-    <channel v-model="show" :channelArr="channelList" :active.sync="tabActive" ></channel>
+    -->
+    <channel v-model="show" :channelArr="channelList" :active.sync="tabActive"></channel>
   </div>
 </template>
 
@@ -40,8 +58,8 @@ import { getArticleList } from '@/api/articleList.js'
 //导入组件
 import channel from './channel/index.vue'
 export default {
-  components:{
-  channel,
+  components: {
+    channel,
   },
   data() {
     return {
@@ -104,6 +122,7 @@ export default {
         //将页面上的数据进行动态变化
         currentChennal.pre_timestamp = res.pre_timestamp
       }
+      // console.log(currentChennal.articleList)
       //将加载状态设置为false
       currentChennal.upLoading = false
     },
@@ -209,7 +228,13 @@ export default {
   font-size: 30px;
   background-color: #fff;
 }
-.van-cell {
-  height: 80px;
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  .bottom-row-left {
+    span {
+      margin-right: 10px;
+    }
+  }
 }
 </style>
