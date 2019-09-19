@@ -37,20 +37,32 @@ function setBlackList(aut_id) {
         method: 'POST',
         data: {
             target: aut_id
-        }    
+        }
     })
 }
 
 //封装举报文章
 
-function setReportArticle({ art_id, type}) {
+function setReportArticle({ art_id, type }) {
     return request({
         url: '/app/v1_0/article/reports',
         method: 'POST',
         data: {
-            target:art_id,
-            type:type,
-            remark:'看它不爽就举报'
+            target: art_id,
+            type: type,
+            remark: '看它不爽就举报'
+        }
+    })
+}
+
+
+//封装联想文章
+function getThinkArticle(key) {
+    return request({
+        url: '/app/v1_0/suggestion',
+        method: 'GET',
+        params: {
+            q: key
         }
     })
 }
@@ -58,4 +70,4 @@ function setReportArticle({ art_id, type}) {
 
 //暴露获取文章的方法
 
-export { getArticleList, setDislikeArticle, setBlackList,setReportArticle }
+export { getArticleList, setDislikeArticle, setBlackList, setReportArticle,getThinkArticle }
