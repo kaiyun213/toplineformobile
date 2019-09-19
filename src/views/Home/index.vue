@@ -4,7 +4,6 @@
     <van-nav-bar title="首页" class="index-nav-bar" />
 
     <!-- 频道标签导航栏 -->
-    <!-- style="position:fixed;top:46px;left:0;width:100%;margin-right:40px" -->
     <van-tabs v-model="tabActive">
       <van-tab :title="channel.name" v-for="channel in channelList" :key="channel.id">
         <van-pull-refresh v-model="channel.downLoading" @refresh="onRefresh">
@@ -28,7 +27,7 @@
                     <span>{{item.pubdate | dayjsformat }}</span>
                   </div>
                   <div>
-                    <van-icon name="cross" />
+                    <van-icon name="cross"  @click="openMore(item.art_id,item.aut_id)"  />
                   </div>
                 </div>
               </template>
@@ -47,6 +46,8 @@
       2.给组件绑定事件   input
     -->
     <channel v-model="show" :channelArr="channelList" :active.sync="tabActive"></channel>
+    <!-- 操作更多弹出层 -->
+    <more v-model="moreShow" @hiddenAeticle="hiddenAeticle" :hiddenArt_id="hiddenArt_id" :blackAut_id="blackAut_id" ></more>
   </div>
 </template>
 
@@ -57,9 +58,11 @@ import { channelRequest } from '@/api/channel.js'
 import { getArticleList } from '@/api/articleList.js'
 //导入组件
 import channel from './channel/index.vue'
+import more from './more/index.vue'
 export default {
   components: {
     channel,
+    more
   },
   data() {
     return {
@@ -77,11 +80,17 @@ export default {
       // downLoading: false,
       //定义存放频道的数组
       channelList: [],
+      //控制更多弹出层显示隐藏
+      moreShow:false,
+      //要删除的文章的id
+      hiddenArt_id:0,
+      //要拉黑的作者的id初始化
+      blackAut_id:0,
     }
   },
   methods: {
     //点击图标显示弹层
-    showPopup() {
+    showPopup(artid) {
       this.show = true
     },
     // onLoad加载事件
@@ -185,6 +194,25 @@ export default {
         this.$set(item, 'downLoading', false)
         //添加上一页数据的事件戳  pre_timestamp
         this.$set(item, 'pre_timestamp', 0)
+      })
+    },
+    //点击删除按钮,显示弹出窗
+    openMore(artid,autid){
+      this.hiddenArt_id=artid
+      this.blackAut_id=autid
+      this.moreShow=true
+    },
+    //要隐藏的文章
+    hiddenAeticle(artid){
+      //获取要被隐藏的文章的文章列表
+      let articles =this.channelList[this.tabActive].articleList
+      //根据art_id来隐藏文章
+      // console.log(articles)
+      articles.forEach((item,index)=>{
+        if(item.art_id===artid){
+          articles.splice(index,1)
+          return
+        }
       })
     }
   },
