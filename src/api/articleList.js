@@ -68,6 +68,20 @@ function getThinkArticle(key) {
 }
 
 
+//封装获取搜索关键字文章
+function searchArticles({ page, per_page, keyWords }) {
+   return request({
+        url: '/app/v1_0/search',
+        method: 'GET',
+        params: {
+            page,
+            per_page,
+            q: keyWords
+        }
+    })
+}
+
+
 //暴露获取文章的方法
 
-export { getArticleList, setDislikeArticle, setBlackList, setReportArticle,getThinkArticle }
+export { getArticleList, setDislikeArticle, setBlackList, setReportArticle, getThinkArticle, searchArticles }
