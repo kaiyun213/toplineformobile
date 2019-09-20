@@ -17,7 +17,7 @@
               </van-grid-item>
             </van-grid>
             <van-grid :column-num="3">
-              <van-grid-item text="评论" />
+              <van-grid-item @click="toComment" text="评论" />
               <van-grid-item text="点赞" />
               <van-grid-item text="收藏" />
             </van-grid>
@@ -69,6 +69,27 @@ export default {
       //加载状态改变
       this.loading = false
     },
+    toComment() {
+     this.$login()
+      // //获取登录信息
+      // let user = this.$store.state.use
+      // //判断是否登录
+      // if (!user || !user.token) {
+      //   this.$dialog.confirm({
+      //     title: '温馨提示',
+      //     message: '要进行当前操作需要登录,请你先登录'
+      //   }).then(() => {
+      //     this.$router.push('/login')
+      //   }).catch(() => {
+      //     return
+      //   });
+
+      // } else {
+      //   console.log(1111)
+      // }
+
+
+    }
   },
   mounted() {
     this.getArticles()

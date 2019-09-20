@@ -96,7 +96,8 @@ export default {
             //将数据保存进本地的缓存中
             this.$store.commit('setUse', res)
             //跳转到home页面
-            this.$router.push('/home')
+            // this.$router.push('/home')
+             this.$router.back()
             this.isLoading = false
           } catch (err) {
             // console.log('出错了')
