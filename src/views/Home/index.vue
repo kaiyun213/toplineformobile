@@ -224,7 +224,7 @@ export default {
 
 <style lang="less" scoped >
 .home {
-  margin-top: 100px;
+  margin-top: 46px;
 }
 .van-nav-bar {
   background-color: #3296fa;

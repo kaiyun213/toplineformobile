@@ -73,7 +73,7 @@ export default {
     async addBlackList() {
       try {
         //发送请求,拉黑作者
-        console.log(this.blackAut_id)
+        // console.log(this.blackAut_id)
         await setBlackList(this.blackAut_id)
         this.$toast.success('拉黑作者成功')
       } catch (error) {
