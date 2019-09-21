@@ -10,7 +10,7 @@
             <div>{{item.aut_name}}&nbsp;&nbsp; {{item.pubdate|dayjsformat}}</div>
           </template>
           <template slot="label">
-            <div>{{item.title}}</div>
+            <div @click="toArticleDetail(item.art_id)">{{item.title}}</div>
             <van-grid :border="false" :column-num="3" v-if="item.cover.images.length >0">
               <van-grid-item v-for="(image,index) in item.images" :key="index">
                 <van-image :src="image" />
@@ -50,7 +50,8 @@ export default {
   },
   methods: {
     onClickLeft() {
-      console.log(111)
+      // console.log(111)
+      this.$router.back()
     },
     async getArticles() {
       this.page++
@@ -89,6 +90,9 @@ export default {
       // }
 
 
+    },
+    toArticleDetail(artid){
+    this.$router.push(`/articleDetail/${artid}`)
     }
   },
   mounted() {

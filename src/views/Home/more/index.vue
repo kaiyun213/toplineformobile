@@ -103,8 +103,8 @@ export default {
         console.log(res)
         this.$toast.success('你的举报信息我们已经收到,我们会尽快处理,感谢你为净化网络所做的贡献')
       } catch (error) {
-        console.log(error)
-        if (error.message.indexOf('409')) {
+        console.dir(error)
+        if (error.response.status=409) {
           this.$toast.fail('当前文章已经被举报了')
         } else {
           this.$toast.fail('系统异常')

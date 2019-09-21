@@ -11,8 +11,7 @@
             v-model="channel.upLoading"
             :finished="channel.finished"
             finished-text="没有更多了"
-            @load="onLoad"
-          >
+            @load="onLoad">
             <van-cell v-for="item in channel.articleList" :key="item.art_id" :title="item.title">
               <template slot="label">
                 <van-grid :border="false" :column-num="3" v-if="item.cover.type>0">
@@ -20,6 +19,7 @@
                     <van-image lazy-load :src="image" style="width:100px;height:100px" />
                   </van-grid-item>
                 </van-grid>
+                <!-- 评论,点赞,收藏 -->
                 <div class="bottom-row">
                   <div class="bottom-row-left">
                     <span>{{item.aut_name}}</span>
@@ -27,7 +27,7 @@
                     <span>{{item.pubdate | dayjsformat }}</span>
                   </div>
                   <div>
-                    <van-icon name="cross"  @click="openMore(item.art_id,item.aut_id)"  />
+                    <van-icon name="cross" @click="openMore(item.art_id,item.aut_id)" />
                   </div>
                 </div>
               </template>
@@ -47,7 +47,12 @@
     -->
     <channel v-model="show" :channelArr="channelList" :active.sync="tabActive"></channel>
     <!-- 操作更多弹出层 -->
-    <more v-model="moreShow" @hiddenAeticle="hiddenAeticle" :hiddenArt_id="hiddenArt_id" :blackAut_id="blackAut_id" ></more>
+    <more
+      v-model="moreShow"
+      @hiddenAeticle="hiddenAeticle"
+      :hiddenArt_id="hiddenArt_id"
+      :blackAut_id="blackAut_id"
+    ></more>
   </div>
 </template>
 
@@ -81,11 +86,11 @@ export default {
       //定义存放频道的数组
       channelList: [],
       //控制更多弹出层显示隐藏
-      moreShow:false,
+      moreShow: false,
       //要删除的文章的id
-      hiddenArt_id:0,
+      hiddenArt_id: 0,
       //要拉黑的作者的id初始化
-      blackAut_id:0,
+      blackAut_id: 0,
     }
   },
   methods: {
@@ -197,20 +202,20 @@ export default {
       })
     },
     //点击删除按钮,显示弹出窗
-    openMore(artid,autid){
-      this.hiddenArt_id=artid
-      this.blackAut_id=autid
-      this.moreShow=true
+    openMore(artid, autid) {
+      this.hiddenArt_id = artid
+      this.blackAut_id = autid
+      this.moreShow = true
     },
     //要隐藏的文章
-    hiddenAeticle(artid){
+    hiddenAeticle(artid) {
       //获取要被隐藏的文章的文章列表
-      let articles =this.channelList[this.tabActive].articleList
+      let articles = this.channelList[this.tabActive].articleList
       //根据art_id来隐藏文章
       // console.log(articles)
-      articles.forEach((item,index)=>{
-        if(item.art_id===artid){
-          articles.splice(index,1)
+      articles.forEach((item, index) => {
+        if (item.art_id === artid) {
+          articles.splice(index, 1)
           return
         }
       })
@@ -224,7 +229,7 @@ export default {
 
 <style lang="less" scoped >
 .home {
-  margin-top: 46px;
+  margin-top: 90px;
 }
 .van-nav-bar {
   background-color: #3296fa;
