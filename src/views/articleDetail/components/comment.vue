@@ -23,12 +23,18 @@
 </template>
 
 <script>
-
+//导入ventBus
+import  eventBus from '@/utils/eventBus.js'
 export default {
   props: ['comment'],
  methods: {
    toreplay(){
-     
+    eventBus.$emit('showcomment',{
+      //控制面板的显示和隐藏
+      show:true,
+      //当前这个评论的数据源
+      ...this.comment
+    }) 
    }
  },
 }

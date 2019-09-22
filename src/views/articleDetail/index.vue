@@ -30,7 +30,11 @@
       </div>
     </van-list>
     <!-- 留言区域 -->
-    <leaveMessage :artId="artId" @addArtComment="addArtComment"></leaveMessage>
+    <leaveMessage :articleObj="articleObj" @addArtComment="addArtComment"></leaveMessage>
+    <!-- 回复评论区 -->
+    <van-popup v-model="show" position="bottom" :style="{ height: '80%' }" >
+       <comment :comment="currentCommentObj"></comment>
+    </van-popup>
   </div>
 </template>
 
@@ -44,6 +48,8 @@ import leaveMessage from './components/leaveMessage.vue'
 import { getArticleDetail } from '@/api/articleList.js'
 // 导入获取评论请求
 import { getComments } from '@/api/comment.js'
+//导入eventBus
+import eventBus from '@/utils/eventBus.js'
 export default {
   components: {
     authorInfo,
@@ -68,6 +74,10 @@ export default {
       finished: false,
       //页容量
       limit: 10,
+      //评论弹出框的显示与隐藏
+      show:false,
+      //当前评论的数据源
+      currentCommentObj:{},
     }
   },
   methods: {
@@ -78,11 +88,13 @@ export default {
     //获取文章详情的方法
     async getDetail() {
       let res = await getArticleDetail(this.artId)
-      // console.log(res)
+      console.log(res)
       this.articleObj = res
     },
     //获取文章评论的方法
     async getArticleComment() {
+      //确认是否登录
+      this.$login()
       //判断是否加载完毕
       if (this.offset === this.end_id) {
         this.finished = true
@@ -100,7 +112,7 @@ export default {
         this.articleComment = res.results
         this.end_id = res.end_id
         this.offset = res.last_id
-        console.log(res)
+        // console.log(res)
       } else {
         // 第二次以后发送请求
         let res = await getComments({
@@ -131,6 +143,11 @@ export default {
   },
   mounted() {
     this.getDetail()
+    //挂载事件
+    eventBus.$on('showcomment',obj=>{
+      this.show=obj.show
+      this.currentCommentObj=obj 
+    })
   },
 }
 </script>

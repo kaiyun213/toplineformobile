@@ -33,5 +33,25 @@ function unfollowAuthor(autid) {
     })
 }
 
+//封装收藏文章
+/* function collectArticle(artid) {
+    console.log(artid)
+    return request({
+        url: '/app/v1_0/article/collections',
+        method: 'POST',
+        data: {
+            target: artid
+        }
+    })
+} */
+
+//取消收藏文章
+/* function cancelCollectArticle(artid) {
+    return request({
+        url: `/app/v1_0/article/collections/${artid}`,
+        method: 'DELETE'
+    })
+} */
+
 //将函数暴露出去
-export { login, followAuthor, unfollowAuthor }
+export { login, followAuthor, unfollowAuthor, }

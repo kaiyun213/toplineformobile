@@ -9,7 +9,8 @@
           <van-button type="danger" size="small" @click="sendMessage">发送</van-button>
         </div>
         <div class="icon">
-          <van-icon name="star-o" />
+          <van-icon  name="star-o" />
+          <!-- <van-icon  name="star" /> -->
         </div>
       </div>
     </van-cell>
@@ -19,8 +20,10 @@
 <script>
 //导入添加评论的方法
 import { addComment } from '@/api/comment.js'
+//导入收藏和取消收藏文章的请求
+import { collectArticle, cancelCollectArticle } from '@/api/user.js'
 export default {
-  props: ['artId'],
+  props: ['articleObj'],
   data() {
     return {
       leaveMessage: '',
@@ -31,7 +34,7 @@ export default {
     async sendMessage() {
       try {
         let res = await addComment({
-          id: this.artId,
+          id: this.articleObj.art_id,
           content: this.leaveMessage
         })
         // console.log(res)
@@ -41,6 +44,20 @@ export default {
         this.$toast.fail(error.message)
       }
     },
+    // 收藏文章
+    /* async collect() {
+      await collectArticle({
+        artid: this.articleObj.art_id
+      })
+      this.articleObj.is_collected = true
+    }, */
+    //取消收藏文章
+    /* async canncelCollect() {
+      cancelCollectArticle({
+        artid: this.articleObj.art_id
+      })
+      this.articleObj.is_collected = false
+    } */
   }
 }
 </script>
