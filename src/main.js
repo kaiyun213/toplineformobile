@@ -27,11 +27,13 @@ import { Lazyload } from 'vant';
 // options 为可选参数，无则不传
 Vue.use(Lazyload)
 //导入插件
-import LoginPlugin from  '@/utils/loginPlugin.js'
+import loginPlugin from '@/utils/loginPlugin.js'
 //使用插件
-Vue.use(LoginPlugin)
-// Vue.use(Dialog)
+Vue.use(loginPlugin)
 
+
+
+// Vue.use(Dialog)
 // Vue.prototype.$login = function () {
 //   //获取登录信息
 //   let user = this.$store.state.use
@@ -64,10 +66,14 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
 
-//注册一个曲剧过滤器
+//注册全局过滤器
 Vue.filter('dayjsformat', function (value) {
   return dayjs().from(dayjs(value))
 })
+Vue.filter('timeformat', function (value) {
+  return dayjs().format('MM-DD HH:mm')
+})
+
 
 
 Vue.config.productionTip = false

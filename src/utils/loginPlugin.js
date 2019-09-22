@@ -13,7 +13,7 @@ Vue.use(Dialog)
 let loginPlugin = {}
 
 //给插件添加一个方法
-loginPlugin.install = function (vue) {
+loginPlugin.install = function (Vue) {
     Vue.prototype.$login = function () {
         //获取登录信息
         let user = store.state.use
@@ -23,12 +23,14 @@ loginPlugin.install = function (vue) {
                 title: '温馨提示',
                 message: '要进行当前操作需要登录,请你先登录'
             }).then(() => {
-                this.$router.push('/login')
+                router.push('/login')
             }).catch(() => {
+                console.log(11111)
                 return
             });
 
         }
+
     }
 }
 

@@ -6,7 +6,7 @@
           <van-field left-icon="edit" v-model="leaveMessage" placeholder="写评论" />
         </div>
         <div class="btn">
-          <van-button type="warning" size="small">发送</van-button>
+          <van-button type="danger" size="small">发送</van-button>
         </div>
         <div class="icon">
           <van-icon name="star-o" />

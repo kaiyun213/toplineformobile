@@ -70,7 +70,7 @@ function getThinkArticle(key) {
 
 //封装获取搜索关键字文章
 function searchArticles({ page, per_page, keyWords }) {
-   return request({
+    return request({
         url: '/app/v1_0/search',
         method: 'GET',
         params: {
@@ -81,7 +81,14 @@ function searchArticles({ page, per_page, keyWords }) {
     })
 }
 
+//封装获取文章详情
+function getArticleDetail(artid) {
+    return request({
+        url: `/app/v1_0/articles/${artid}`,
+        method: 'GET',
+    })
+}
 
 //暴露获取文章的方法
 
-export { getArticleList, setDislikeArticle, setBlackList, setReportArticle, getThinkArticle, searchArticles }
+export { getArticleList, setDislikeArticle, setBlackList, setReportArticle, getThinkArticle, searchArticles, getArticleDetail }

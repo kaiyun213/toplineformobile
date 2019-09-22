@@ -3,20 +3,18 @@
     <template slot="title">
       <div class="authorInfo">
         <div class="img">
-          <img
-            src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569079377562&di=bc095e86c09c722892319b176e09f865&imgtype=0&src=http%3A%2F%2Fc1.haibao.cn%2Fimg%2F600_500_100_0%2F1505934743.9217%2F18c6436498e86d7bab182b8d9d6463b4.jpg"
-            alt
-          />
+          <img :src="articleObj.aut_photo" alt />
         </div>
         <div class="title">
-          <div class="article-title">央视网新闻</div>
+          <div class="article-title">{{articleObj.aut_name}}</div>
           <div class="article-info">
-            <span>9小时前&nbsp; ∙</span>&nbsp;
-            <span>央视网新闻频道官方账号</span>
+            <span>{{articleObj.pubdate |timeformat}}&nbsp;</span>&nbsp;
+            <!-- <span>央视网新闻频道官方账号</span> -->
           </div>
         </div>
         <div class="btn">
-          <van-button type="danger" size="small">关注</van-button>
+          <van-button v-if="articleObj.is_followed===false" type="default" size="small" @click="doFollow">关注</van-button>
+          <van-button v-else type="danger" size="small" @click="unFollow">取消关注</van-button>
         </div>
       </div>
     </template>
@@ -24,8 +22,22 @@
 </template>
 
 <script>
+//导入关注作者和取消关注作者
+import { followAuthor, unfollowAuthor } from '@/api/user.js'
 export default {
-
+  props: ['articleObj'],
+  methods: {
+    //关注作者
+    doFollow() {
+      followAuthor(this.articleObj.aut_id)
+      this.articleObj.is_followed = true
+    },
+    //取消关注作者
+    unFollow() {
+      unfollowAuthor(this.articleObj.aut_id)
+      this.articleObj.is_followed = false
+    }
+  },
 }
 </script>
 

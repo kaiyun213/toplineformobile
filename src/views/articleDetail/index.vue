@@ -5,31 +5,34 @@
     <!-- 文章标题 -->
     <van-cell>
       <template slot="title">
-        <div class="title">习近平在庆祝人们政协成立70周年大会上发表重要讲话</div>
+        <div class="title">{{articleObj.title}}</div>
       </template>
     </van-cell>
     <!-- 作者信息 -->
-    <authorInfo></authorInfo>
+    <authorInfo :articleObj="articleObj"></authorInfo>
     <!-- 文章内容 -->
     <van-cell>
       <template slot="title">
-        <div v-for="(item,index) in 30" :key="index">这是一个寂寞的天,下着有些伤心的雨;</div>
+        <div v-html="articleObj.content"></div>
       </template>
     </van-cell>
     <!-- 点赞&不喜欢 -->
-    <like></like>
+    <like :articleObj="articleObj"></like>
     <!-- 评论区域 -->
-    <comment></comment>
+    <comment :articleObj="articleObj"></comment>
     <!-- 留言区域 -->
     <leaveMessage></leaveMessage>
   </div>
 </template>
 
 <script>
+//导入组件
 import authorInfo from './components/authorInfo.vue'
 import like from './components/like.vue'
 import comment from './components/comment.vue'
-import leaveMessage  from  './components/leaveMessage.vue'
+import leaveMessage from './components/leaveMessage.vue'
+//导入获取文章的请求
+import { getArticleDetail } from '@/api/articleList.js'
 export default {
   components: {
     authorInfo,
@@ -39,14 +42,25 @@ export default {
   },
   data() {
     return {
-    artId:this.$route.params.art_id,
+      artId: this.$route.params.artid,
+      //文章详情对象
+      articleObj: {},
     }
   },
   methods: {
     //返回上一页
     onClickLeft() {
       this.$router.back()
+    },
+    //获取文章详情的方法
+    async getDetail() {
+      let res = await getArticleDetail(this.artId)
+      console.log(res)
+      this.articleObj = res
     }
+  },
+  mounted() {
+    this.getDetail()
   },
 }
 </script>

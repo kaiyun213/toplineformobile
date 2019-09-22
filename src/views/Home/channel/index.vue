@@ -18,10 +18,10 @@
             <button v-else @click="completeChannel">完成</button>
           </div>
         </div>
-        <van-grid :gutter="2" clickable>
+        <van-grid :gutter="1" clickable>
           <van-grid-item v-for="(item,index) in channelArr" :key="item.id">
             <div slot="text" class="text-channel" @click="transferActive(index)">
-              <div :class="{active:index===active}">{{item.name}}</div>
+              <div class="channel-name" :class="{active:index===active}">{{item.name}}</div>
               <van-icon class="close-icon" v-show="isShow" name="close" @click="delChannel(index)" />
             </div>
           </van-grid-item>
@@ -34,9 +34,9 @@
             <span>点击添加频道</span>
           </div>
         </div>
-        <van-grid :gutter="2" clickable>
+        <van-grid :gutter="1" clickable>
           <van-grid-item v-for="item in otherChannelList" :key="item.id">
-            <div slot="text" @click="addChannel(item)">
+            <div class="other-channel-name" slot="text" @click="addChannel(item)">
               <!-- <van-icon name="plus" /> -->
               {{item.name}}
             </div>
@@ -200,6 +200,10 @@ export default {
 }
 .van-grid-item__content {
   position: relative;
+  .channel-name {
+    font-size: 14px;
+    color: #333;
+  }
   .close-icon {
     position: absolute;
     top: 0;
@@ -207,5 +211,9 @@ export default {
     font-size: 18px;
     color: #f00;
   }
+}
+.other-channel-name {
+  font-size: 14px;
+  color: #333;
 }
 </style>

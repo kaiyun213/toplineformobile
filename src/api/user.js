@@ -14,6 +14,24 @@ function login({ mobile, code }) {
     });
 }
 
+//封装关注作者请求
+function followAuthor(autid) {
+    return request({
+        url: '/app/v1_0/user/followings',
+        method: 'POST',
+        data: {
+            target: autid
+        }
+    })
+}
+
+//封装取消关注作者请求
+function unfollowAuthor(autid) {
+    return request({
+        url: `/app/v1_0/user/followings/${autid}`,
+        method: 'DELETE'
+    })
+}
 
 //将函数暴露出去
-export { login }
+export { login, followAuthor, unfollowAuthor }

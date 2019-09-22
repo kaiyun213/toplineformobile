@@ -70,8 +70,8 @@ export default {
       //加载状态改变
       this.loading = false
     },
-    toComment() {
-     this.$login()
+    async toComment() {
+      await this.$login()
       // //获取登录信息
       // let user = this.$store.state.use
       // //判断是否登录
@@ -91,8 +91,8 @@ export default {
 
 
     },
-    toArticleDetail(artid){
-    this.$router.push(`/articleDetail/${artid}`)
+    toArticleDetail(artid) {
+      this.$router.push(`/articleDetail/${artid}`)
     }
   },
   mounted() {
