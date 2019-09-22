@@ -19,9 +19,18 @@
     <!-- 点赞&不喜欢 -->
     <like :articleObj="articleObj"></like>
     <!-- 评论区域 -->
-    <comment :articleObj="articleObj"></comment>
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="getArticleComment"
+    >
+      <div v-for="comment in articleComment" :key="comment.last_id">
+        <comment :comment="comment"></comment>
+      </div>
+    </van-list>
     <!-- 留言区域 -->
-    <leaveMessage></leaveMessage>
+    <leaveMessage :artId="artId" @addArtComment="addArtComment"></leaveMessage>
   </div>
 </template>
 
@@ -33,6 +42,8 @@ import comment from './components/comment.vue'
 import leaveMessage from './components/leaveMessage.vue'
 //导入获取文章的请求
 import { getArticleDetail } from '@/api/articleList.js'
+// 导入获取评论请求
+import { getComments } from '@/api/comment.js'
 export default {
   components: {
     authorInfo,
@@ -45,6 +56,18 @@ export default {
       artId: this.$route.params.artid,
       //文章详情对象
       articleObj: {},
+      //文章评论的数组
+      articleComment: [],
+      //评论加载完毕的标识
+      end_id: -1,
+      //本页评论加载完毕的标识
+      offset: 0,
+      //加载状态
+      loading: false,
+      //加载完成状态
+      finished: false,
+      //页容量
+      limit: 10,
     }
   },
   methods: {
@@ -55,9 +78,56 @@ export default {
     //获取文章详情的方法
     async getDetail() {
       let res = await getArticleDetail(this.artId)
-      console.log(res)
+      // console.log(res)
       this.articleObj = res
+    },
+    //获取文章评论的方法
+    async getArticleComment() {
+      //判断是否加载完毕
+      if (this.offset === this.end_id) {
+        this.finished = true
+        this.loading = false
+        return
+      }
+      if (this.offset === 0) {
+        //第一次发送请求
+        let res = await getComments({
+          type: 'a',
+          source: this.artId,
+          limit: this.limit
+        })
+        //将数据赋值给集合
+        this.articleComment = res.results
+        this.end_id = res.end_id
+        this.offset = res.last_id
+        console.log(res)
+      } else {
+        // 第二次以后发送请求
+        let res = await getComments({
+          type: 'a',
+          source: this.artId,
+          offset: this.offset,
+          limit: this.limit
+        })
+        //追加数据到集合
+        this.articleComment = [...this.articleComment, ...res.results]
+        this.end_id = res.end_id
+        this.offset = res.last_id
+
+      }
+      this.loading = false
+    },
+    //接收发送的评论
+    addArtComment(value) {
+      // console.log(value)
+      this.articleComment.unshift({
+        ...value.new_obj,
+        art_id: value.art_id
+      })
+      //刷新页面
+      this.getDetail();
     }
+
   },
   mounted() {
     this.getDetail()

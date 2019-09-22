@@ -13,7 +13,12 @@
           </div>
         </div>
         <div class="btn">
-          <van-button v-if="articleObj.is_followed===false" type="default" size="small" @click="doFollow">关注</van-button>
+          <van-button
+            v-if="articleObj.is_followed===false"
+            type="default"
+            size="small"
+            @click="doFollow"
+          >关注</van-button>
           <van-button v-else type="danger" size="small" @click="unFollow">取消关注</van-button>
         </div>
       </div>
@@ -28,14 +33,24 @@ export default {
   props: ['articleObj'],
   methods: {
     //关注作者
-    doFollow() {
-      followAuthor(this.articleObj.aut_id)
-      this.articleObj.is_followed = true
+    async doFollow() {
+      try {
+        this.$login()
+        await followAuthor(this.articleObj.aut_id)
+        this.articleObj.is_followed = true
+      } catch (error) {
+        this.$toast.fail(error.message)
+      }
     },
     //取消关注作者
-    unFollow() {
-      unfollowAuthor(this.articleObj.aut_id)
-      this.articleObj.is_followed = false
+    async unFollow() {
+      try {
+        this.$login()
+        await unfollowAuthor(this.articleObj.aut_id)
+        this.articleObj.is_followed = false
+      } catch (error) {
+       this.$toast.fail(error.message)
+      }
     }
   },
 }

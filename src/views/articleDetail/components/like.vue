@@ -34,23 +34,43 @@ export default {
   methods: {
     //对文章点赞
     async doThumbUp() {
-      this.articleObj.attitude = 1
+      try {
+        this.$login()
+        this.articleObj.attitude = 1
       let res = await thumbUp(this.articleObj.art_id)
+      } catch (error) {
+        this.$toast.fail(error.message)
+      }
     },
     //取消点赞
     async doUnthumbUp() {
-      this.articleObj.attitude = -1
+      try {
+        this.$login()
+        this.articleObj.attitude = -1
       let res = await unthumbUp(this.articleObj.art_id)
+      } catch (error) {
+        this.$toast.fail(error.message)
+      }
     },
     //对文章不喜欢
     async doLike() {
-      this.articleObj.attitude = 0
+      try {
+        this.$login()
+        this.articleObj.attitude = 0
       let res = await like(this.articleObj.art_id)
+      } catch (error) {
+        this.$toast.fail(error.message)
+      }
     },
     //取消不喜欢
     async doUnlike() {
-      this.articleObj.attitude = -1
+      try {
+        this.$login()
+        this.articleObj.attitude = -1
       let res = await unlike(this.articleObj.art_id)
+      } catch (error) {
+        this.$toast.fail(error.message)
+      }
     },
   },
 }

@@ -3,21 +3,19 @@
     <template slot="title">
       <div class="authorInfo">
         <div class="img">
-          <img
-            src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569079377562&di=bc095e86c09c722892319b176e09f865&imgtype=0&src=http%3A%2F%2Fc1.haibao.cn%2Fimg%2F600_500_100_0%2F1505934743.9217%2F18c6436498e86d7bab182b8d9d6463b4.jpg"
-            alt
-          />
+          <img :src="comment.aut_photo" alt />
         </div>
-        <div class="title">用户名</div>
+        <div class="title">{{comment.aut_name}}</div>
         <div class="like-icon">
           <van-icon name="good-job-o" />
+          ({{comment.like_count}})
         </div>
       </div>
       <div class="artcile-content">
-        <div>吴青峰</div>
+        <div>{{comment.content}}</div>
         <div>
-          <span>09-21 08:51</span>&nbsp;&nbsp;&nbsp;
-          <span>回复(100)</span>
+          <span>{{comment.pubdate|timeformat}}</span>&nbsp;&nbsp;&nbsp;
+          <span @click="toreplay">回复({{comment.reply_count}})</span>
         </div>
       </div>
     </template>
@@ -25,8 +23,14 @@
 </template>
 
 <script>
-export default {
 
+export default {
+  props: ['comment'],
+ methods: {
+   toreplay(){
+     
+   }
+ },
 }
 </script>
 
@@ -49,9 +53,9 @@ export default {
     margin-top: 10px;
   }
   .like-icon {
+    margin-top: 10px;
     .van-icon {
       font-size: 30px;
-      margin-top: 10px;
     }
   }
 }
