@@ -26,14 +26,43 @@
       @load="getArticleComment"
     >
       <div v-for="comment in articleComment" :key="comment.last_id">
-        <comment :comment="comment"></comment>
+        <comment :isFirstComment="true" :comment="comment"></comment>
       </div>
     </van-list>
     <!-- 留言区域 -->
-    <leaveMessage :articleObj="articleObj" @addArtComment="addArtComment"></leaveMessage>
+    <leaveMessage :isFirstComment="true" :articleObj="articleObj" @addArtComment="addArtComment"></leaveMessage>
     <!-- 回复评论区 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '80%' }" >
-       <comment :comment="currentCommentObj"></comment>
+    <van-popup v-model="show" position="bottom" :style="{ height: '80%' }">
+      <!-- 当前评论 -->
+      <van-cell>
+        <template slot="title">
+          <h3>当前评论</h3>
+        </template>
+      </van-cell>
+      <comment :isFirstComment="false" :comment="currentCommentObj" @addArtComment="addArtComment"></comment>
+      <!-- 当前评论的回复 -->
+      <van-cell>
+        <template slot="title">
+          <h3>当前评论的回复</h3>
+        </template>
+      </van-cell>
+      <van-list
+        v-model="secloading"
+        :finished="secfinished"
+        finished-text="没有更多了"
+        @load="getCommentsReply"
+      >
+        <div v-for="comment in commentsReplyList" :key="comment.last_id">
+          <comment :isFirstComment="false" :comment="comment"></comment>
+        </div>
+      </van-list>
+      <!-- 发送评论的回复 -->
+      <leaveMessage
+        :currentCommentId="currentCommentId"
+        :articleObj="articleObj"
+        :isFirstComment="false"
+        @addComComment="addComComment"
+      ></leaveMessage>
     </van-popup>
   </div>
 </template>
@@ -75,9 +104,17 @@ export default {
       //页容量
       limit: 10,
       //评论弹出框的显示与隐藏
-      show:false,
+      show: false,
       //当前评论的数据源
-      currentCommentObj:{},
+      currentCommentObj: {},
+      //文章评论的回复的数组
+      commentsReplyList: [],
+      secoffset: 0,
+      secend_id: -1,
+      secloading: false,
+      secfinished: false,
+      //保存当前评论的id
+      currentCommentId: 0,
     }
   },
   methods: {
@@ -88,7 +125,7 @@ export default {
     //获取文章详情的方法
     async getDetail() {
       let res = await getArticleDetail(this.artId)
-      console.log(res)
+      // console.log(res)
       this.articleObj = res
     },
     //获取文章评论的方法
@@ -138,15 +175,63 @@ export default {
       })
       //刷新页面
       this.getDetail();
+    },
+    //获取评论的回复
+    async getCommentsReply() {
+      //确认是否登录
+      this.$login()
+      //判断加载完毕停止加载
+      if (this.secoffset === this.secend_id) {
+        this.secfinished = true
+        this.secloading = false
+        return
+      }
+      if (this.secoffset === 0) {
+        //第一次加载
+        let res = await getComments({
+          type: 'c',
+          source: this.currentCommentId,
+
+        })
+        //将数据赋值给集合
+        this.commentsReplyList = res.results
+        this.secend_id = res.end_id
+        this.secoffset = res.last_id
+      } else {
+        // 第二次以后发送请求
+        let res = await getComments({
+          type: 'c',
+          source: this.currentCommentId,
+          offset: this.secoffset
+        })
+        //追加数据到集合
+        this.commentsReplyList = [...this.commentsReplyList, ...res.results]
+        this.secend_id = res.end_id
+        this.secoffset = res.last_id
+
+      }
+      this.secloading = false
+    },
+    //添加评论回复
+    addComComment(value) {
+      // console.log(value)
+      this.commentsReplyList.unshift({
+        ...value.new_obj,
+        art_id: value.art_id
+      })
+      //刷新页面
+      this.getDetail();
     }
 
   },
   mounted() {
     this.getDetail()
     //挂载事件
-    eventBus.$on('showcomment',obj=>{
-      this.show=obj.show
-      this.currentCommentObj=obj 
+    eventBus.$on('showcomment', obj => {
+      this.show = obj.show
+      this.currentCommentObj = obj
+      // console.log(this.currentCommentObj)
+      this.currentCommentId = this.currentCommentObj.com_id
     })
   },
 }

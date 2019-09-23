@@ -15,7 +15,7 @@
         <div>{{comment.content}}</div>
         <div>
           <span>{{comment.pubdate|timeformat}}</span>&nbsp;&nbsp;&nbsp;
-          <span @click="toreplay">回复({{comment.reply_count}})</span>
+          <span @click="toreplay" v-if="isFirstComment">回复({{comment.reply_count}})</span>
         </div>
       </div>
     </template>
@@ -26,7 +26,7 @@
 //导入ventBus
 import  eventBus from '@/utils/eventBus.js'
 export default {
-  props: ['comment'],
+  props: ['comment','isFirstComment'],
  methods: {
    toreplay(){
     eventBus.$emit('showcomment',{

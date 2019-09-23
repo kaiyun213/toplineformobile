@@ -8,9 +8,8 @@
         <div class="btn">
           <van-button type="danger" size="small" @click="sendMessage">发送</van-button>
         </div>
-        <div class="icon">
-          <van-icon  name="star-o" />
-          <!-- <van-icon  name="star" /> -->
+        <div v-if="isFirstComment" class="icon">
+          <van-icon name="star-o" />
         </div>
       </div>
     </van-cell>
@@ -23,7 +22,7 @@ import { addComment } from '@/api/comment.js'
 //导入收藏和取消收藏文章的请求
 import { collectArticle, cancelCollectArticle } from '@/api/user.js'
 export default {
-  props: ['articleObj'],
+  props: ['articleObj', 'isFirstComment', 'currentCommentId'],
   data() {
     return {
       leaveMessage: '',
@@ -33,13 +32,25 @@ export default {
     //发送评论
     async sendMessage() {
       try {
-        let res = await addComment({
-          id: this.articleObj.art_id,
-          content: this.leaveMessage
-        })
-        // console.log(res)
-        this.$emit('addArtComment', res)
-        this.leaveMessage = ''
+        this.$login()
+        if (this.isFirstComment) {
+          let res = await addComment({
+            id: this.articleObj.art_id,
+            content: this.leaveMessage
+          })
+          // console.log(res)
+          this.leaveMessage = ''
+          this.$emit('addArtComment', res)
+        } else {
+          let res = await addComment({
+            id: this.currentCommentId,
+            content: this.leaveMessage,
+            artid: this.articleObj.art_id,
+          })
+          // console.log(res)
+          this.leaveMessage = ''
+          this.$emit('addComComment', res)
+        }
       } catch (error) {
         this.$toast.fail(error.message)
       }
@@ -90,5 +101,6 @@ export default {
   position: fixed;
   bottom: 0;
   left: 0;
+  width: 100%;
 }
 </style>
