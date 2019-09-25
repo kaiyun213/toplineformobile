@@ -73,6 +73,9 @@ Vue.filter('dayjsformat', function (value) {
 Vue.filter('timeformat', function (value) {
   return dayjs().format('MM-DD HH:mm')
 })
+Vue.filter('dateformat', function (value) {
+  return dayjs().format('YYYY-MM-DD')
+})
 
 
 

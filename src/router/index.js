@@ -18,6 +18,9 @@ export default new Router({
       path: '/', component: () => import('@/views/TabBarLayout/index.vue'),
       children: [
         { name: 'home', path: 'home', component: () => import('@/views/Home/index.vue') },
+        { name: 'personCenter', path: 'personCenter', component: () => import('@/views/personCenter/index.vue') },
+        { name: 'personInfo', path: 'personInfo', component: () => import('@/views/personInfo/index.vue') },
+        { name: 'chat', path: 'chat', component: () => import('@/views/chat/index.vue') },
       ]
     },
     { name: 'login', path: '/login', component: () => import(/* webpackChunkName: "about" */ '@/views/Login/index.vue') },
